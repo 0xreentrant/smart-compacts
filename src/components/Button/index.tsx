@@ -11,7 +11,7 @@ type Props = {
 export const Button= ({to='', children, className='', disabled, onClick, ...props}: Props) => {
   const navigate = useNavigate()
   const withDisabledStyles = disabled ? 'bg-gray-400 cursor-not-allowed' : ''
-  const clickHandler = (e: React.SyntheticEvent) => {
+  const clickHandler: React.MouseEventHandler = (e) => {
     e.preventDefault()
 
     if (disabled) {
