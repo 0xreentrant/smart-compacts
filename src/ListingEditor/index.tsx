@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext} from 'react'
+import {useEffect, useContext} from 'react'
 import {useNavigate, useLocation} from 'react-router-dom'
 import {concat, toString} from 'uint8arrays'
 import {useMachine} from '@xstate/react'
@@ -30,17 +30,14 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
   // todo: use some kind of conditional function to handle initializaing all of these
   let resumeURI: ResumeURI
   let ipfsHash: string
+  let heading: string
 
   if (location.state && !doInitializeNew) {
     ipfsHash = location.state.resumeURI.ipfsHash
-
-    // TODO: replace all refs to this w/ actual value
-    resumeURI = location.state.resumeURI 
+    heading = location.state.resumeURI.title
   } else {
     ipfsHash = ''
-
-    // TODO: replace all refs to this w/ actual value
-    resumeURI = {title: '', createdOn: '', ipfsHash: ''} 
+    heading = 'New Resume'
   }
 
   const [state, send] = useMachine(editorMachine, { 
@@ -48,6 +45,7 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
     context: {
       isNew: true,
       ipfsHash: ipfsHash
+      heading,
     },
     services: {
       fetchIPFSDocument: async () => {
@@ -78,22 +76,18 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
   const isLoading = () => state.matches('loading')
   const isEditView = state.context.currentView === STATES.EDIT
 
-  // OLD STATE
-  const [heading, setHeading] = useState(resumeURI?.title || 'New Resume')
-  /////////////
-
   usePrompt('Are you sure you want to leave without saving?', isDirty()) 
-
-  const handleUpdateHeading = (val: string) => { 
-    setHeading(val) 
-  }
 
   const handleToggleView = () => {
     send('TOGGLE_VIEW')
   }
 
+  const handleUpdateHeading = (newString: string) => { 
+    send({type: 'UPDATE_HEADING', value: newString})
+  }
+
   const handleEditorChange = (newText: string) => {
-    send({ type: 'UPDATE', value: newText })
+    send({ type: 'UPDATE_EDITOR', value: newText })
   }
 
   const handleSave = () => {
@@ -118,7 +112,7 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
         <Spinner />
       ) : (
         <>
-          <EditableHeader text={heading} handleUpdate={handleUpdateHeading} />
+          <EditableHeader text={state.context.heading} handleUpdate={handleUpdateHeading} />
 
           <div className=''>
             <Button 

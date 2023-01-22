@@ -16,19 +16,26 @@ export const editorMachine = createMachine<any, any>(
       ipfsDocument: "",
       buffer: "",
       currentView: "Edit",
+      heading: '',
     },
     // allow the UI controls states and the editor states work in parallel, so I can simply 
     // track state.value for editor state while in 'preview' view. Then the 'save' button 
     // won't flip between disabled/enabled when flipping between views.  
     type: "parallel",
     states: {
-      editing: {
-        id: "editing",
+      heading: {
+        on: {
+          UPDATE_HEADING: {
+            actions: 'updateHeading'
+          }
+        }
+      },
+      editor: {
         initial: "clean",
         states: {
           clean: {
             on: {
-              UPDATE: {
+              UPDATE_EDITOR: {
                 target: "dirty",
                 actions: "updateBuffer",
               },
@@ -36,7 +43,7 @@ export const editorMachine = createMachine<any, any>(
           },
           dirty: {
             on: {
-              UPDATE: [
+              UPDATE_EDITOR: [
                 { cond: "isOriginalDoc", actions: "updateBuffer", target: "clean" },
                 { actions: "updateBuffer" },
               ],
@@ -140,6 +147,7 @@ export const editorMachine = createMachine<any, any>(
       setEditing: assign({ currentView: STATES.EDIT }),
       updateIPFSDocument: assign({ ipfsDocument: (ctx) => ctx.buffer }),
       updateBuffer: assign({ buffer: (_, e) => e.value }),
+      updateHeading: assign({ heading: (_, e) => e.value }),
     },
     guards: {
       isOriginalDoc: (ctx, e) => e.value === ctx.ipfsDocument,
