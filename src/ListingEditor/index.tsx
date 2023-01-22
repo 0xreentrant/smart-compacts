@@ -2,20 +2,22 @@ import {useState, useEffect, useContext} from 'react'
 import {useNavigate, useLocation} from 'react-router-dom'
 import {concat, toString} from 'uint8arrays'
 import {useMachine} from '@xstate/react'
-import debounce from 'lodash.debounce'
 import {EditableHeader} from './EditableHeader'
 import {Editor} from './Editor'
 import {Preview} from './Preview'
 import {Button} from '../components/Button'
-import {editorMachine, MachineContext} from './ListingEditorMachine'
+import {editorMachine} from './ListingEditorMachine'
 import {usePrompt} from '../utils/useBlocker'
 import {PAGES, STATES} from '../constants'
 import {ResumeURI} from '../types/Resume'
 import {IPFSContext} from '../IPFSContext'
 import {Spinner} from '../components/Spinner'
 
-type EditorState = typeof STATES[keyof typeof STATES] // NOTE: will naturally grow with STATES
-const inverseEditorState = (cur: EditorState) => cur === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT
+// NOTE: will naturally grow with STATES
+type EditorState = typeof STATES[keyof typeof STATES] 
+const inverseEditorState = (cur: EditorState) => {
+  return cur === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT
+}
 
 type Props = {
   doInitializeNew: boolean
@@ -30,7 +32,6 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
   let ipfsHash: string
 
   if (location.state && !doInitializeNew) {
-    console.log(location.state)
     backTo = location.state.backTo
     ipfsHash = location.state.resumeURI.ipfsHash
 
@@ -41,10 +42,10 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
     ipfsHash = ''
 
     // TODO: replace all refs to this w/ actual value
-    resumeURI = { title: '', createdOn: '', ipfsHash: '' } 
+    resumeURI = {title: '', createdOn: '', ipfsHash: ''} 
   }
 
-  const [state, send, service] = useMachine(editorMachine, { 
+  const [state, send] = useMachine(editorMachine, { 
     devTools: true,
     context: {
       isNew: true,
@@ -52,12 +53,13 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
     },
     services: {
       fetchIPFSDocument: async () => {
-        const content = ipfs.cat(ipfsHash)
         const bytes = []
-        for await (const chunk of content) { bytes.push(chunk) }
-        const text = toString(concat(bytes))
-        console.log('Got IPFS doc', text)
-        return text
+
+        for await (const chunk of ipfs.cat(ipfsHash)) { 
+          bytes.push(chunk) 
+        }
+
+        return toString(concat(bytes))
       }
     }
   })
@@ -80,53 +82,29 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
   const isLoading = () => state.matches('loading')
 
   // OLD STATE
-  const [curView, setCurView] = useState(STATES.EDIT)
-  const [inMemoryText] = useState(state.context.ipfsDocument)
-  const [isNew, setIsNew] = useState(doInitializeNew)
   const [heading, setHeading] = useState(resumeURI?.title || 'New Resume')
   /////////////
 
-  /// DEBUG
-  useEffect(() => {
-    console.log({inMemoryText, latestSavedText})
-  })
+  usePrompt('Are you sure you want to leave without saving?', isDirty()) 
 
-  service.onTransition(debounce((state) => {
-    console.log(state.value)
-  }, 500))
+  const handleToggleView = () => {
+    send('TOGGLE_VIEW')
+  }
 
-  //////////////////
-
+  const handleEditorChange = (newText: string) => {
+    send({ type: 'UPDATE', value: newText })
+  }
 
   const handleSave = () => {
     send('SAVE')
-
-    // TODO: to remove
-    setIsNew(false)
   }
 
-  const toggleCurView = () => {
-    setCurView(inverseEditorState(curView))
-  }
-
-  usePrompt('Are you sure you want to leave without saving?', isDirty()) 
-
-  // UI State handling
-  useEffect(() => { 
-    if (heading !== resumeURI!.title || inMemoryText !== state.context.ipfsDocument) {
-        send('UPDATE')
-    }
-
-    if (inMemoryText === state.context.ipfsDocument) {
-      send('RESET')
-    }
-  }, [heading, inMemoryText])
-
+  // TODO: update state machine
+  // TODO: handle deletion/burning
   const handleDelete = () => {
     const res = window.confirm('Are you sure? You\'ll no longer be able to assign this resume to an engagement!')
 
     if (res) {
-      // TODO: handle deletion/burning
       navigate(PAGES.LISTINGS)
     }
   }
@@ -169,9 +147,7 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
           {state.context.currentView === STATES.EDIT
             ? <Editor 
               doc={state.context.buffer} 
-              handleChange={(newText: string) => {
-                send({ type: 'UPDATE', value: newText })
-              }}
+              handleChange={handleEditorChange}
             />
             : <Preview document={state.context.buffer} />
           }

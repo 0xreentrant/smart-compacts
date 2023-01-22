@@ -123,18 +123,16 @@ export const editorMachine = createMachine<any, any>(
   },
   {
     actions: {
-      setDoneLoading: assign({ doneLoading: true }),
+      setDoneLoading: assign({doneLoading: true}),
       setNoLongerNew: assign({isNew: false}),
       setPreviewing: assign({currentView: STATES.PREVIEW}),
       setEditing: assign({currentView: STATES.EDIT}),
+      updateIPFSDocument: assign({ipfsDocument: ctx => ctx.buffer}),
       updateBuffer: assign({buffer: (_, e) => e.value}),
     },
     guards: {
-      isDirty: (ctx, e) => {
-        const out = e.value !== ctx.ipfsDocument
-        return out
-      },
-      withValidIPFSHash: (ctx) => ctx.ipfsHash.length > 0,
+      isDirty: (ctx, e) => e.value !== ctx.ipfsDocument,
+      withValidIPFSHash: ctx => ctx.ipfsHash.length > 0,
       invalid: () => true,
     },
   }
