@@ -13,6 +13,7 @@ export const editorMachine = createMachine<any, any>(
       doneLoading: false,
       ipfsHash: "",
       ipfsDocument: "",
+      buffer: "",
     },
     states: {
       initializing: {
@@ -39,6 +40,7 @@ export const editorMachine = createMachine<any, any>(
                 actions: [
                   "setDoneLoading",
                   assign({ ipfsDocument: (_, e) => e.data }),
+                  assign({ buffer: (_, e) => e.data }),
                 ],
               },
               onError: {
@@ -62,14 +64,19 @@ export const editorMachine = createMachine<any, any>(
         states: {
           clean: {
             on: {
-              UPDATED: {
+              UPDATE: {
                 target: "dirty",
+                actions: "updateBuffer",
               },
             },
           },
           dirty: {
             entry: () => console.log("setting dirty - got updates to heading/inMemoryText"),
             on: {
+              UPDATE: [
+                {actions: "updateBuffer", cond: 'isDirty'},
+                {target: 'clean', actions: 'updateBuffer'},
+              ],
               SAVE: {
                 target: "clean",
                 actions: () => console.log('Saving'),
@@ -87,8 +94,13 @@ export const editorMachine = createMachine<any, any>(
   {
     actions: {
       setDoneLoading: assign({ doneLoading: true }),
+      updateBuffer: assign({buffer: (_, e) => e.value}),
     },
     guards: {
+      isDirty: (ctx, e) => {
+        const out = e.value !== ctx.ipfsDocument
+        return out
+      },
       withValidIPFSHash: (ctx) => ctx.ipfsHash.length > 0,
       invalid: () => true,
     },

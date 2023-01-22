@@ -81,13 +81,9 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
   const isLoading = () => state.matches('loading')
 
   // OLD STATE
-  const [doneLoading, setDoneLoading] = useState(false)
-  const [origDoc, setOrigDoc] = useState('')
   const [curView, setCurView] = useState(STATES.EDIT)
-  const [latestSavedText, setLatestSavedText] = useState<string | null>('')
-  const [inMemoryText, setInMemoryText] = useState(origDoc)
+  const [inMemoryText] = useState(state.context.ipfsDocument)
   const [isNew, setIsNew] = useState(doInitializeNew)
-  const [hasEdits, setHasEdits] = useState(false)
   const [heading, setHeading] = useState(resumeURI?.title || 'New Resume')
   /////////////
 
@@ -107,37 +103,22 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
     send('SAVE')
 
     // TODO: to remove
-    setHasEdits(false) 
     setIsNew(false)
-    setLatestSavedText(inMemoryText)
   }
 
   const toggleCurView = () => {
     setCurView(inverseEditorState(curView))
   }
 
-  usePrompt('Are you sure you want to leave without saving?', hasEdits) 
+  usePrompt('Are you sure you want to leave without saving?', isDirty()) 
 
-  // TODO: replace with xstate machine
   // UI State handling
   useEffect(() => { 
-    // enable "save"
-    if (
-      heading !== resumeURI!.title 
-      || inMemoryText !== origDoc
-    ) {
-      if (doneLoading) {
-        setHasEdits(true)
-        send('UPDATED')
-
-      } else {
-        setDoneLoading(true)
-      }
+    if (heading !== resumeURI!.title || inMemoryText !== state.context.ipfsDocument) {
+        send('UPDATE')
     }
 
-    // disable "save"
-    if (inMemoryText === latestSavedText || inMemoryText === origDoc) {
-      setHasEdits(false)
+    if (inMemoryText === state.context.ipfsDocument) {
       send('RESET')
     }
   }, [heading, inMemoryText])
@@ -188,10 +169,12 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
 
           {curView === STATES.EDIT
             ? <Editor 
-              doc={state.context.ipfsDocument} 
-              handleChange={(newText: string) => setInMemoryText(newText)}
+              doc={state.context.buffer} 
+              handleChange={(newText: string) => {
+                send({ type: 'UPDATE', value: newText })
+              }}
             />
-            : <Preview document={inMemoryText} />
+            : <Preview document={state.context.buffer} />
           }
         </>
       )
