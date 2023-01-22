@@ -19,26 +19,24 @@ const inverseEditorState = (cur: EditorState) => {
   return cur === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT
 }
 
-type Props = {
+type ListingEditorProps = {
+  backTo: string
   doInitializeNew: boolean
 }
 
-export const ListingEditor = ({doInitializeNew = true}: Props) => {
+export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorProps) => {
   const location: any = useLocation()
 
   // todo: use some kind of conditional function to handle initializaing all of these
   let resumeURI: ResumeURI
-  let backTo: string
   let ipfsHash: string
 
   if (location.state && !doInitializeNew) {
-    backTo = location.state.backTo
     ipfsHash = location.state.resumeURI.ipfsHash
 
     // TODO: replace all refs to this w/ actual value
     resumeURI = location.state.resumeURI 
   } else {
-    backTo = '/'
     ipfsHash = ''
 
     // TODO: replace all refs to this w/ actual value

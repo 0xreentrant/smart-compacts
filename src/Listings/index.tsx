@@ -32,7 +32,7 @@ export const Listings = () => {
       <h1 className='pb-2'>My Resumes</h1>
       <EntriesHeader />
       <EntriesList entries={privateListings} />
-      <Link to={'/listing/new'} state={{backTo: '/'}}>+ New Resume</Link>
+      <Link to={'/listing/new'}>+ New Resume</Link>
 
       <h1 className='pb-2'>Public Resumes</h1>
       <EntriesHeader />
