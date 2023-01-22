@@ -1,0 +1,3 @@
+- TODO: incorporate eslint+prettier
+  - https://davidltran.com/blog/cra-ts-eslint-prettier-quick-start/
+  - https://www.mkapica.com/react-eslint/
