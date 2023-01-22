@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { EditableHeader } from './EditableHeader'
 import { Editor } from './Editor'
+import { Preview } from './Preview'
 import { usePrompt } from '../utils/useBlocker'
 import { PAGES } from '../constants'
+
+const DUMMY = "*React-Markdown* is **Awesome**"
 
 const STATES = { EDIT: 'Edit', PREVIEW: 'Preview' }
 
@@ -30,20 +33,12 @@ const Button = ({to='', children, className='', disabled, onClick, ...props}) =>
   )
 }
 
-const PreviewListing = () => {
-  return (
-    <div>
-      Showing Preview
-    </div>
-  ) 
-}
-
 export const ListingEditor = ({
-  meta = { title: 'New Resume' },
+  meta = { title: 'New Resume', origDoc: DUMMY },
   backTo = PAGES.LISTINGS,
   doInitializeNew = false, // handle setting up for adding a listing
 }) => {
-  const [curView, setCurView] = useState(STATES.EDIT)
+  const [curView, setCurView] = useState(STATES.PREVIEW)
   const [inMemoryDoc, setInMemoryDoc] = useState(meta?.origDoc)
   const [isNew, setIsNew] = useState(doInitializeNew)
   const [hasEdits, setHasEdits] = useState(false)
@@ -58,8 +53,10 @@ export const ListingEditor = ({
     setIsNew(false)
   }
 
+  const inverseEditorState = (cur) => cur === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT
+
   const toggleCurView = () => {
-    setCurView(curView === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT)
+    setCurView(inverseEditorState(curView))
   }
 
   // dEBUG
@@ -96,7 +93,7 @@ export const ListingEditor = ({
           onClick={toggleCurView}
           className='mr-2'
         >
-          {curView}
+          {inverseEditorState(curView)}
         </Button>        
 
         <Button 
@@ -118,7 +115,7 @@ export const ListingEditor = ({
 
       {curView === STATES.EDIT
         ? <Editor doc={inMemoryDoc} />
-        : <PreviewListing document={inMemoryDoc} />
+        : <Preview document={inMemoryDoc} />
       }
     </div>
   )
