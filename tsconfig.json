@@ -1,8 +1,10 @@
 {
+  "extends": "./tsconfig.paths.json",
   "include": [
-    "./src/"
+    "./src/**/*"
   ],
   "compilerOptions": {
+    "baseUrl": "src",
     "allowSyntheticDefaultImports": true,
     "target": "es5",
     "lib": [
