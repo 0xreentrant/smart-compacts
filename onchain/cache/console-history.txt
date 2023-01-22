@@ -1,0 +1,47 @@
+inter.parseTransaction({ data: tx.data, value: tx.value })
+inter = new ethers.utils.Interface(ABI.abi)
+ABI
+inter = new ethers.utils.Interface([ABI])
+inter;
+internalTask
+inter.parseTransaction({ data: tx.data, value: tx.value })
+inter = new ethers.utils.Interface([ABI])
+tx = await resume.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '{ data: "Hello world"}')
+tx
+tx  = await provider.getTransaction('0x0b213676c0cec5038fab35a10503c9c25f6aca85600eb65a07a556390382def1')
+tx  = provider.getTransaction('0x0b213676c0cec5038fab35a10503c9c25f6aca85600eb65a07a556390382def1')
+tx = await resume.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '{ data: "Hello world"}')
+resume.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '{ data: "Hello world"}')
+resume = await Res.attach('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512')
+const res = await Res.attach('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512')
+const Res = await ethers.getContractFactory('Resume')
+const res = await Res.attach('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512')
+provider = ethers.getDefaultProvider()
+inter = new ethers.utils.Interface([ABI])
+inter = new ethers.utils.Interface(ABI)
+ABI.map
+typeof ABI
+ABI
+inter = new ethers.utils.Interface(ABI)
+ABI = require('./onchain/artifacts/contracts/Resume.sol/Resume.json')
+ABI = require('./hardhat.config.js')
+ABI = require('./onchain/artifacts/Resume.sol/Resume.json')
+ABI = require('onchain/artifacts/Resume.sol/Resume.json')
+ABI = require('./onchain/artifacts/Resume.sol/Resume.json')
+exit
+require
+ethers.utils.toUtf8String(str)
+str = ethers.utils.toUtf8Bytes(val.data)
+str = ethers.utils.formatBytes32String(val.data)
+num
+ethers.utils.toUtf8String(num.toHexString())
+ethers.utils.toUtf8String(num)
+num.toHexString()
+num.toString()
+num = ethers.BigNumber.from(val.data)
+num = BigNumber.from(val.data)
+val = await res.toTRES('0x46A30ac73E47E9A8383331D0DDe3fB40C32b195c', 'Hello world')
+await res.toTRES('0x46A30ac73E47E9A8383331D0DDe3fB40C32b195c', 'Hello world')
+res.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', 'Hello world')
+const res = await Res.attach('0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512')
+const Res = await ethers.getContractFactory('Resume')
