@@ -1,14 +1,19 @@
 import React from 'react'
-import { SubmissionForm } from './SubmissionForm'
+import { Routes, Route, Link } from "react-router-dom"
 import { create } from 'ipfs-http-client'
+import { ListingEditor } from './ListingEditor'
 
 const client = create('https://ipfs.infura.io:5001')
 
 export const App = () => {
   return (
-    <div className="flex items-center justify-center flex-col pt-3">
-      <div>Resume Submission</div>
-      <SubmissionForm ipfs={client} />
+    <div className='p-3'>
+      <Routes>
+        <Route path='/' element={<ListingEditor />} />
+        <Route path='/listing/' element={<ListingEditor doInitializeNew={true} />}>
+          <Route path=':addr' element={<ListingEditor />}/>
+        </Route>
+      </Routes>
     </div>
   )
 }
