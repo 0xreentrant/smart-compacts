@@ -1,8 +1,11 @@
-require("@nomiclabs/hardhat-waffle");
-require('./onchain/tasks/mint-for.js')
-require('./onchain/tasks/balance.js')
-require('./onchain/tasks/decodetx.js')
-require('./onchain/tasks/enumerate.js')
+require('@typechain/hardhat')
+require('@nomiclabs/hardhat-ethers')
+require('@nomiclabs/hardhat-waffle')
+require('./src/onchain/tasks/mint-for.js')
+require('./src/onchain/tasks/balance.js')
+require('./src/onchain/tasks/decodetx.js')
+require('./src/onchain/tasks/enumerate.js')
+require('./src/onchain/tasks/list-all.js')
 
 /**
  * @type import('hardhat/config').HardhatUserConfig
@@ -10,6 +13,6 @@ require('./onchain/tasks/enumerate.js')
 module.exports = {
   solidity: "0.7.0",
   paths: {
-    root: './onchain/'
+    root: './src/onchain/'
   }
 };
