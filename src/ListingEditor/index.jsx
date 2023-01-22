@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { EditableHeader } from './EditableHeader'
 import { Editor } from './Editor'
 import { usePrompt } from '../utils/useBlocker'
 
 const STATES = { EDIT: 'Edit', PREVIEW: 'Preview' }
+const PAGES = { LISTINGS: '/' }
 
 const Button = ({to='', children, className='', disabled, onClick, ...props}) => {
   const withDisabledBg = disabled ? 'bg-gray-400' : ''
@@ -38,7 +40,7 @@ const PreviewListing = () => {
 
 export const ListingEditor = ({
   meta = { title: 'New Resume' },
-  backTo = '/',
+  backTo = PAGES.LISTINGS,
   doInitializeNew = true, // handle setting up for adding a listing
 }) => {
   const [curView, setCurView] = useState(STATES.EDIT)
@@ -60,21 +62,23 @@ export const ListingEditor = ({
     setCurView(curView === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT)
   }
 
-  const handleDelete = () => {
-    const res = window.confirm('Are you sure? You\'ll no longer be able to assign this resume to an engagement!')
-    
-    if (res) {
-      // TODO: handle deletion
-    }
-  }
-
-  //usePrompt('Are you sure you want to leave without saving?', true)
-
   useEffect(() => { 
     if (heading !== meta.title) {
       setHasEdits(true)
     }
   }, [heading])
+
+  usePrompt('Are you sure you want to leave without saving?', hasEdits) 
+
+  const navigate = useNavigate()
+  const handleDelete = () => {
+    const res = window.confirm('Are you sure? You\'ll no longer be able to assign this resume to an engagement!')
+    
+    if (res) {
+      // TODO: handle deletion
+      navigate(PAGES.LISTINGS)
+    }
+  }
 
   return (
     <div className=''>
