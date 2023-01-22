@@ -12,12 +12,15 @@ export const Button = ({to='', children, className='', disabled, onClick, ...pro
     }
 
     if (to) {
-      navigate()
+      console.log('about to navigate to ', to)
+      navigate(to)
       return;
     }
 
     onClick && onClick(e)
   }
+
+  console.log(to)
 
   return (
     <a href={to} onClick={clickHandler} className={`btn ${className} ${withDisabledBg}`} {...props}>
