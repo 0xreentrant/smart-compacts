@@ -3,7 +3,6 @@ import { SubmissionForm } from './SubmissionForm/index.jsx'
 import { create } from 'ipfs-http-client'
 
 const client = create('https://ipfs.infura.io:5001')
-//const client = {};
 
 export const App = () => {
   return (
