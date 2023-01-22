@@ -11,13 +11,15 @@ const DUMMY = "*React-Markdown* is **Awesome**"
 const STATES = { EDIT: 'Edit', PREVIEW: 'Preview' }
 
 const Button = ({to='', children, className='', disabled, onClick, ...props}) => {
+  const navigate = useNavigate()
   const withDisabledBg = disabled ? 'bg-gray-400' : ''
   const clickHandler = e => {
+    e.preventDefault()
+
     if (to) {
+      navigate(to)
       return;
     }
-
-    e.preventDefault()
 
     if (disabled) {
       return 
