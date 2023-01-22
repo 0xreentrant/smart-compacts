@@ -4,53 +4,30 @@ import {EthersContext} from '../EthersContext'
 import {EntriesList} from './EntriesList'
 import {EntriesHeader} from './EntriesHeader'
 import {Resume} from '../onchain/typechain-types/Resume'
-
-const DEMO_WALLET = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8' // hardhat wallet
+import {ResumeListings} from './ResumeListings'
+import {Entry} from '../types/Entry'
 
 export const Listings = () => {
   const resume = useContext(EthersContext) as Resume
-  const [publicListings, setPublicListings] = useState<Array<any>>([])
-  const [privateListings, setPrivateListings] = useState<Array<any>>([])
+  const [publicListings, setPublicListings] = useState<Array<Entry>>([])
+  const [privateListings, setPrivateListings] = useState<Array<Entry>>([])
 
   useEffect(() => { 
-    const listPrivateResumes = async () => {
-      const numNft = (await resume.balanceOf(DEMO_WALLET)).toNumber()
+    const listingsService = new ResumeListings(resume)
 
-      console.log(numNft)
+    const run = async () => {
+      const privateResumes = await listingsService.queryPrivateResumes()
 
-      const nftQueries = Array(numNft).fill(null).map((_, i) => {
-        return resume.tokenOfOwnerByIndex(DEMO_WALLET, i).then(id => {
-          const tokenId = id.toNumber()
-          return Promise.all([tokenId, resume.tokenURI(tokenId)])
-        })
-      })
+      setPrivateListings(privateResumes)
+      
+      const privateIds = privateResumes.map(({tokenId}) => tokenId)
+      const allResumes = await listingsService.queryPublicResumes()
+      const filteredResumes = allResumes.filter(entry => privateIds.includes(entry.tokenId))
 
-      await Promise.all(nftQueries).then(allNfts => {
-        console.log('private', allNfts)
-        const processedResumes = allNfts.map(([id, data]: [Number, string]) => ({ tokenId: id, ...JSON.parse(data) }))
-        setPrivateListings(processedResumes)
-      })
+      setPublicListings(filteredResumes)
     }
 
-    listPrivateResumes()
-
-    const listPublicResumes = async () => {
-      const numNft = (await resume.totalSupply()).toNumber()
-
-      const nftQueries = Array(numNft).fill(null).map((_, i) => {
-        return resume.tokenByIndex(i).then(id => {
-          const tokenId = id.toNumber()
-          return Promise.all([tokenId, resume.tokenURI(tokenId)])
-        })
-      })
-
-      await Promise.all(nftQueries).then(allNfts => {
-        const processedResumes = allNfts.map(([id, data]: [Number, string]) => ({ tokenId: id, ...JSON.parse(data) }))
-        setPublicListings(processedResumes)
-      })
-    }
-
-    listPublicResumes()
+    run()
   }, [])
 
   return (
@@ -64,6 +41,9 @@ export const Listings = () => {
       <h1 className='pb-2'>Public Resumes</h1>
       <EntriesHeader />
       <EntriesList entries={publicListings} />
+
+      <hr className='mt-10' />
+      <h1 className='mt-3'>&copy; 2022 - __WHOAMI__</h1>
     </div>
   )
 }
