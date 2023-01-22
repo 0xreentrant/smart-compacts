@@ -21,7 +21,7 @@ export const EntriesList = ({entries}: EntriesListProps) => {
           <Link 
             key={tokenId}
             to={`/listing/${tokenId}`}
-            state={{resumeURI: {title, createdOn, ipfsHash}}}
+            state={{resumeURI: {title, createdOn, ipfsHash}, backTo: '/'}}
           >
             {title}
             {createdOn}

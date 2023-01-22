@@ -27,14 +27,14 @@ type Props = {
   doInitializeNew: boolean
 }
 
-export const ListingEditor = ({doInitializeNew}: Props) => {
+export const ListingEditor = ({doInitializeNew = true}: Props) => {
   const location: any = useLocation()
 
   let resumeURI: ResumeURI | null
   let backTo: string
 
-  if (location.state) {
-    resumeURI = location.state.resumeURI
+  if (location.state && !doInitializeNew) {
+    console.log(location.state)
     backTo = location.state.backTo
   } else {
     resumeURI = { title: '', createdOn: '', ipfsHash: '' }
