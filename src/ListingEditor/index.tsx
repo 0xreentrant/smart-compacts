@@ -2,6 +2,7 @@ import {useState, useEffect, useContext} from 'react'
 import {useNavigate, useLocation} from 'react-router-dom'
 import {concat, toString} from 'uint8arrays'
 import {useMachine} from '@xstate/react'
+import debounce from 'lodash.debounce'
 import {EditableHeader} from './EditableHeader'
 import {Editor} from './Editor'
 import {Preview} from './Preview'
@@ -42,6 +43,7 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
   }
 
   const [state, send, service] = useMachine(editorMachine, { 
+    devTools: true,
     context: {
       isNew: true
     } 
@@ -65,6 +67,18 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
   const [heading, setHeading] = useState(resumeURI?.title || 'New Resume')
   /////////////
 
+  /// DEBUG
+  useEffect(() => {
+    console.log({inMemoryText, latestSavedText})
+  })
+
+  service.onTransition(debounce((state) => {
+    console.log(state.value)
+  }, 500))
+
+  //////////////////
+
+
   const handleSave = () => {
     send('SAVE')
 
@@ -77,13 +91,6 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
   const toggleCurView = () => {
     setCurView(inverseEditorState(curView))
   }
-
-  useEffect(() => {
-    console.log({inMemoryText, latestSavedText}, state.value)
-  })
-
-  //service.onTransition((state) => {
-  //})
 
   usePrompt('Are you sure you want to leave without saving?', hasEdits) 
 
