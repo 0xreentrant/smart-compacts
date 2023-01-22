@@ -9,7 +9,6 @@ import {Button} from '../components/Button'
 import {editorMachine} from './ListingEditorMachine'
 import {usePrompt} from '../utils/useBlocker'
 import {PAGES, STATES} from '../constants'
-import {ResumeURI} from '../types/Resume'
 import {IPFSContext} from '../IPFSContext'
 import {Spinner} from '../components/Spinner'
 
@@ -26,9 +25,6 @@ type ListingEditorProps = {
 
 export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorProps) => {
   const location: any = useLocation()
-
-  // todo: use some kind of conditional function to handle initializaing all of these
-  let resumeURI: ResumeURI
   let ipfsHash: string
   let heading: string
 
@@ -40,11 +36,14 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
     heading = 'New Resume'
   }
 
+  const navigate = useNavigate()
+  const ipfs = useContext(IPFSContext)
+
   const [state, send] = useMachine(editorMachine, { 
     devTools: true,
     context: {
       isNew: true,
-      ipfsHash: ipfsHash
+      ipfsHash,
       heading,
     },
     services: {
@@ -60,6 +59,11 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
     }
   })
 
+  const isDirty = () => state.matches({editing: 'dirty'})
+  const isClean = () => state.matches({editing: 'clean'})
+  const isLoading = () => state.matches('loading')
+  const isEditView = state.context.currentView === STATES.EDIT
+
   useEffect(() => {
     if (doInitializeNew) {
       send('IS_NEW')
@@ -68,14 +72,6 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
     }
   }, [])
 
-  const navigate = useNavigate()
-  const ipfs = useContext(IPFSContext)
-
-  const isDirty = () => state.matches({editing: 'dirty'})
-  const isClean = () => state.matches({editing: 'clean'})
-  const isLoading = () => state.matches('loading')
-  const isEditView = state.context.currentView === STATES.EDIT
-
   usePrompt('Are you sure you want to leave without saving?', isDirty()) 
 
   const handleToggleView = () => {
@@ -83,6 +79,7 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
   }
 
   const handleUpdateHeading = (newString: string) => { 
+    console.log(newString)
     send({type: 'UPDATE_HEADING', value: newString})
   }
 
@@ -94,8 +91,8 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
     send('SAVE')
   }
 
-  // TODO: update state machine
   // TODO: handle deletion/burning
+  // move to state machine
   const handleDelete = () => {
     const res = window.confirm('Are you sure? You\'ll no longer be able to assign this resume to an engagement!')
 

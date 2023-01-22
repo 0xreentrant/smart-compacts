@@ -12,16 +12,14 @@ export const editorMachine = createMachine<any, any>(
     context: {
       isNew: true,
       doneLoading: false,
+      currentView: "Edit",
       ipfsHash: "",
       ipfsDocument: "",
       buffer: "",
-      currentView: "Edit",
       heading: '',
     },
-    // allow the UI controls states and the editor states work in parallel, so I can simply 
-    // track state.value for editor state while in 'preview' view. Then the 'save' button 
-    // won't flip between disabled/enabled when flipping between views.  
     type: "parallel",
+    // Separate state for each major cluster of the UI 
     states: {
       heading: {
         on: {
