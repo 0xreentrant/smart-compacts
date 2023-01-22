@@ -70,7 +70,7 @@ export const editorMachine = createMachine<any, any>(
           },
           onDone: {
             target: "#editing.clean",
-            actions: 'setNoLongerNew'
+            actions: ['updateIPFSDocument', 'setNoLongerNew']
           },
         },
       },
