@@ -19,4 +19,17 @@ There is a perspective that is being developed while working on this project and
 
 State machines can help clarify both the internal state of the user interface, and the **visual state** of the user interface.
 
+---
+
+A good line of inquiry when building with XState in complex frontends is, "What needs to be stable while other things change? Something? Nothing?" This will expose what can be nested and what should be parallel.
+
+---
+
+My favorite part of using Xstate is the refactoring.  Once the inventory of intended events is built in and the UI is hooked up with `send` statements, any refactors in the state machine that keep the inventory of possible events intact will likely be limited to the frontend only.
+
+for code examples:
+src/ListingEditor/ListingEditorMachine.ts
+f79c4146818ad5e51eeaec3460118a14bf87fe1e before refactor
+d66300c after refactor
+
 
