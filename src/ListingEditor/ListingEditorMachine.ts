@@ -10,6 +10,7 @@ export const editorMachine = createMachine<any, any>(
   {
     initial: "initializing",
     context: {
+      isNew: true,
       doneLoading: false,
       ipfsHash: "",
       ipfsDocument: "",
@@ -58,6 +59,19 @@ export const editorMachine = createMachine<any, any>(
           },
         },
       },
+      saving: {
+        id: "saving",
+        invoke: {
+          src: () => {
+            // TODO: flesh out save
+            return Promise.resolve("hello");
+          },
+          onDone: {
+            target: "#editing.clean",
+            actions: 'setNoLongerNew'
+          },
+        },
+      },
       editing: {
         id: "editing",
         initial: "clean",
@@ -78,7 +92,7 @@ export const editorMachine = createMachine<any, any>(
                 {target: 'clean', actions: 'updateBuffer'},
               ],
               SAVE: {
-                target: "clean",
+                target: "#saving",
                 actions: () => console.log('Saving'),
               },
               RESET: {
@@ -94,6 +108,7 @@ export const editorMachine = createMachine<any, any>(
   {
     actions: {
       setDoneLoading: assign({ doneLoading: true }),
+      setNoLongerNew: assign({isNew: false}),
       updateBuffer: assign({buffer: (_, e) => e.value}),
     },
     guards: {

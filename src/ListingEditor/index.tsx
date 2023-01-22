@@ -159,8 +159,8 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
             </Button>
 
             <Button 
-              className={!isNew ? 'bg-red-400': ''} 
-              disabled={isNew}
+              className={!state.context.isNew ? 'bg-red-400': ''} 
+              disabled={state.context.isNew}
               onClick={handleDelete}
             >
               Delete
