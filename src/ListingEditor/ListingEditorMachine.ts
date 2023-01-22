@@ -129,7 +129,10 @@ export const editorMachine = createMachine<any, any>(
               src: "saveResume",
               onDone: {
                 target: "idle",
-                actions: ["updateIPFSDocument", "setNoLongerNew"],
+                actions: [
+                  "updateIPFSDocument", 
+                  "setNoLongerNew"
+                ],
               },
             },
           },

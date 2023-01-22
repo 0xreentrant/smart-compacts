@@ -1,7 +1,8 @@
 import {useEffect, useContext} from 'react'
 import {useNavigate, useLocation} from 'react-router-dom'
-import {concat, toString} from 'uint8arrays'
 import {useMachine} from '@xstate/react'
+import {concat, toString} from 'uint8arrays'
+import all from 'it-all'
 import {EditableHeader} from './EditableHeader'
 import {Editor} from './Editor'
 import {Preview} from './Preview'
@@ -48,12 +49,7 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
     },
     services: {
       fetchIPFSDocument: async () => {
-        const bytes = []
-
-        for await (const chunk of ipfs.cat(ipfsHash)) { 
-          bytes.push(chunk) 
-        }
-
+        const bytes = await all(ipfs.cat(ipfsHash)) 
         return toString(concat(bytes))
       }
     }
@@ -79,7 +75,6 @@ export const ListingEditor = ({backTo, doInitializeNew = true}: ListingEditorPro
   }
 
   const handleUpdateHeading = (newString: string) => { 
-    console.log(newString)
     send({type: 'UPDATE_HEADING', value: newString})
   }
 
