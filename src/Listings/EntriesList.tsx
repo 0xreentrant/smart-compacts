@@ -10,7 +10,7 @@ export const EntriesList = ({entries}: EntriesListProps) => {
 
   return (
     <div className='max-w-2xl rounded-md p-2 pb-4'>
-      {entries.map(({
+      {entries && entries.map(({
         tokenId,
         title,
         createdOn,

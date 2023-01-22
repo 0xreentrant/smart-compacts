@@ -1,12 +1,11 @@
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom'
-import { ethers } from 'ethers'
-import { App } from './App.jsx'
-import { EthersContext } from './EthersContext'
+import {BrowserRouter} from 'react-router-dom'
+import {App} from './App.jsx'
+import {EthersContext, Resume} from './EthersContext'
 import './App.css'
 
 ReactDOM.render(
-  <EthersContext.Provider value={ethers}>
+  <EthersContext.Provider value={Resume}>
     <BrowserRouter>
       <App />
     </BrowserRouter>

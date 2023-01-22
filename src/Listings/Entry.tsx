@@ -13,7 +13,7 @@ export const Entry = ({title, createdOn, onClick}: EntryProps) => {
       onClick={onClick}
     >
       <span className=''>{title}</span>
-      <span className=''>{createdOn}</span>
+      <span className=''>{new Date(createdOn * 1000).toDateString()}</span>
     </div>
   )
 }
