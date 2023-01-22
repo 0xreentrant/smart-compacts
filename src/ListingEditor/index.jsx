@@ -3,7 +3,7 @@ import { EditableHeader } from './EditableHeader'
 import { Editor } from './Editor'
 import { usePrompt } from '../utils/useBlocker'
 
-const STATES = { EDIT: 'edit', PREVIEW: 'preview' }
+const STATES = { EDIT: 'Edit', PREVIEW: 'Preview' }
 
 const Button = ({to='', children, className='', disabled, onClick, ...props}) => {
   const withDisabledBg = disabled ? 'bg-gray-400' : ''
@@ -18,7 +18,7 @@ const Button = ({to='', children, className='', disabled, onClick, ...props}) =>
       return 
     }
 
-    onClick(e)
+    onClick && onClick(e)
   }
 
   return (
@@ -56,6 +56,10 @@ export const ListingEditor = ({
     setIsNew(false)
   }
 
+  const toggleCurView = () => {
+    setCurView(curView === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT)
+  }
+
   const handleDelete = () => {
     const res = window.confirm('Are you sure? You\'ll no longer be able to assign this resume to an engagement!')
     
@@ -79,10 +83,12 @@ export const ListingEditor = ({
       <EditableHeader text={heading} handleUpdate={(val) => { setHeading(val) }} />
 
       <div className=''>
-        {showEdit 
-          ? <Button className='mr-2'>Edit</Button>
-          : <Button className='mr-2'>Preview</Button>
-        }
+        <Button 
+          onClick={toggleCurView}
+          className='mr-2'
+        >
+          {curView}
+        </Button>        
 
         <Button 
           className='mr-2 bg-green-400' 
