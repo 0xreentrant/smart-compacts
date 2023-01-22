@@ -1,4 +1,3 @@
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const Button = ({to='', children, className='', disabled, onClick, ...props}) => {
@@ -12,15 +11,12 @@ export const Button = ({to='', children, className='', disabled, onClick, ...pro
     }
 
     if (to) {
-      console.log('about to navigate to ', to)
       navigate(to)
       return;
     }
 
     onClick && onClick(e)
   }
-
-  console.log(to)
 
   return (
     <a href={to} onClick={clickHandler} className={`btn ${className} ${withDisabledBg}`} {...props}>

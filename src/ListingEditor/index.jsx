@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { EditableHeader } from './EditableHeader'
 import { Editor } from './Editor'
 import { Preview } from './Preview'
@@ -24,7 +24,6 @@ export const ListingEditor = ({
   const [hasEdits, setHasEdits] = useState(false)
   const [heading, setHeading] = useState(meta.title)
 
-  const showEdit = curView === STATES.PREVIEW 
   const isSaveable = hasEdits
   const shouldDisableSave = !isSaveable
 
@@ -39,11 +38,6 @@ export const ListingEditor = ({
   const toggleCurView = () => {
     setCurView(inverseEditorState(curView))
   }
-
-  // dEBUG
-  const params = useParams()
-  useEffect(() => {console.log(meta?.origDoc, inMemoryDoc)}, [])
-  ////////////////
 
   useEffect(() => { 
     // enable "save"
