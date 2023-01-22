@@ -1,37 +1,57 @@
-import {createMachine, assign} from 'xstate'
+import { createMachine, assign } from "xstate";
 
-export const editorMachine = createMachine<any,any>(
+export type MachineContext = {
+  doneLoading: boolean,
+  ipfsHash: string,
+  ipfsDocument: string,
+}
+
+export const editorMachine = createMachine<any, any>(
   {
     initial: "initializing",
     context: {
       doneLoading: false,
-      origDoc: undefined,
+      ipfsHash: "",
+      ipfsDocument: "",
     },
     states: {
       initializing: {
-        on: {
-          IS_NEW: "editing",
-          IS_EXISTING: "loading",
-        },
-      },
-      loading: {
-        initial: 'validating_data',
+        initial: "validating",
         states: {
-          validating_data: {
-            entry: () => console.log('checking for hash'),
+          validating: {
             on: {
-              HAS_IPFS_HASH: {
-                target: "fetching_ipfs_hash",
-              },
+              IS_NEW: "#editing",
+              IS_EXISTING: [
+                {
+                  target: "fetching_ipfs_hash",
+                  cond: "withValidIPFSHash",
+                },
+                { target: "errors.hasInvalidIPFSHash", cond: "invalid" },
+              ],
             },
           },
           fetching_ipfs_hash: {
-            entry: () => console.log('has hash, fetching'),
-            exit: ['setDoneLoading'],
-            on: {
-              FETCHED_IPFS_HASH: {
+            entry: () => console.log("has hash, fetching"),
+            invoke: {
+              src: 'fetchIPFSDocument',
+              onDone: {
                 target: "#editing",
+                actions: [
+                  "setDoneLoading",
+                  assign({ ipfsDocument: (_, e) => e.data }),
+                ],
               },
+              onError: {
+                target: 'errors.networkError'
+              }
+            },
+          },
+          errors: {
+            initial: "none",
+            states: {
+              none: {},
+              hasInvalidIPFSHash: {},
+              networkError: {},
             },
           },
         },
@@ -48,15 +68,15 @@ export const editorMachine = createMachine<any,any>(
             },
           },
           dirty: {
-            entry: () => console.log('setting dirty - got updates to heading/inMemoryText'),
+            entry: () => console.log("setting dirty - got updates to heading/inMemoryText"),
             on: {
               SAVE: {
                 target: "clean",
-                actions: () => {}
+                actions: () => console.log('Saving'),
               },
               RESET: {
                 target: "clean",
-                actions: () => console.log('resetting dirty - inMemoryText same as latestSavedText'),
+                actions: () => console.log("resetting dirty - inMemoryText same as latestSavedText"),
               },
             },
           },
@@ -66,9 +86,12 @@ export const editorMachine = createMachine<any,any>(
   },
   {
     actions: {
-      setDoneLoading: assign({ doneLoading: true })
-    }
+      setDoneLoading: assign({ doneLoading: true }),
+    },
+    guards: {
+      withValidIPFSHash: (ctx) => ctx.ipfsHash.length > 0,
+      invalid: () => true,
+    },
   }
 );
-
 

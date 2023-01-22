@@ -7,18 +7,12 @@ import {EditableHeader} from './EditableHeader'
 import {Editor} from './Editor'
 import {Preview} from './Preview'
 import {Button} from '../components/Button'
-import {editorMachine} from './ListingEditorMachine'
+import {editorMachine, MachineContext} from './ListingEditorMachine'
 import {usePrompt} from '../utils/useBlocker'
 import {PAGES} from '../constants'
 import {ResumeURI} from '../types/Resume'
 import {IPFSContext} from '../IPFSContext'
 import {Spinner} from '../components/Spinner'
-
-type ListingEditorProps = {
-  resumeURI: ResumeURI,
-  backTo: string,
-  doInitializeNew: boolean
-}
 
 const STATES = { EDIT: 'Edit', PREVIEW: 'Preview' }
 type EditorState = typeof STATES[keyof typeof STATES] // NOTE: will naturally grow with STATES
@@ -31,23 +25,53 @@ type Props = {
 export const ListingEditor = ({doInitializeNew = true}: Props) => {
   const location: any = useLocation()
 
-  let resumeURI: ResumeURI | null
+  // todo: use some kind of conditional function to handle initializaing all of these
+  let resumeURI: ResumeURI
   let backTo: string
+  let ipfsHash: string
 
   if (location.state && !doInitializeNew) {
     console.log(location.state)
     backTo = location.state.backTo
+    ipfsHash = location.state.resumeURI.ipfsHash
+
+    // TODO: replace all refs to this w/ actual value
+    resumeURI = location.state.resumeURI 
   } else {
-    resumeURI = { title: '', createdOn: '', ipfsHash: '' }
     backTo = '/'
+    ipfsHash = ''
+
+    // TODO: replace all refs to this w/ actual value
+    resumeURI = { title: '', createdOn: '', ipfsHash: '' } 
   }
 
   const [state, send, service] = useMachine(editorMachine, { 
     devTools: true,
     context: {
-      isNew: true
-    } 
+      isNew: true,
+      ipfsHash: ipfsHash
+    },
+    services: {
+      fetchIPFSDocument: async () => {
+        const content = ipfs.cat(ipfsHash)
+        const bytes = []
+        for await (const chunk of content) { bytes.push(chunk) }
+        const text = toString(concat(bytes))
+        console.log('Got IPFS doc', text)
+        return text
+      }
+    }
   })
+
+  useEffect(() => {
+    if (doInitializeNew) {
+      console.log('initializing new')
+      send('IS_NEW')
+    } else {
+      console.log('is existing file')
+      send('IS_EXISTING')
+    }
+  }, [])
 
   const navigate = useNavigate()
   const ipfs = useContext(IPFSContext)
@@ -118,33 +142,6 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
     }
   }, [heading, inMemoryText])
 
-  // retrieve ipfs data if we have it
-  useEffect(() => {
-    const getIPFSContent = async () => {
-      if (!doInitializeNew && resumeURI?.ipfsHash && !doneLoading) {
-        send('HAS_IPFS_HASH')
-
-        const content = ipfs.cat(resumeURI.ipfsHash)
-
-        const bytes = []
-        for await (const chunk of content) {
-          bytes.push(chunk)
-        }
-
-        const text = toString(concat(bytes))
-        setInMemoryText(text)
-        setOrigDoc(text)
-        send('FETCHED_IPFS_HASH')
-      } else {
-        send('IS_NEW')
-        setInMemoryText('')
-        setOrigDoc('')
-      }
-    }
-
-    getIPFSContent()
-  }, [])
-
   const handleDelete = () => {
     const res = window.confirm('Are you sure? You\'ll no longer be able to assign this resume to an engagement!')
 
@@ -191,7 +188,7 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
 
           {curView === STATES.EDIT
             ? <Editor 
-              doc={inMemoryText} 
+              doc={state.context.ipfsDocument} 
               handleChange={(newText: string) => setInMemoryText(newText)}
             />
             : <Preview document={inMemoryText} />
