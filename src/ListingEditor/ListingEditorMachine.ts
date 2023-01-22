@@ -1,4 +1,5 @@
-import { createMachine, assign } from "xstate";
+import {createMachine, assign} from "xstate";
+import {STATES} from '../constants'
 
 export type MachineContext = {
   doneLoading: boolean,
@@ -15,6 +16,7 @@ export const editorMachine = createMachine<any, any>(
       ipfsHash: "",
       ipfsDocument: "",
       buffer: "",
+      currentView: 'Edit',
     },
     states: {
       initializing: {
@@ -102,13 +104,29 @@ export const editorMachine = createMachine<any, any>(
             },
           },
         },
+        on: {
+          TOGGLE_VIEW: {
+            target: 'previewing',
+            actions: 'setPreviewing'
+          }
+        }
       },
+      previewing: {
+        on: {
+          TOGGLE_VIEW: {
+            target: 'editing',
+            actions: 'setEditing'
+          }
+        }
+      }
     },
   },
   {
     actions: {
       setDoneLoading: assign({ doneLoading: true }),
       setNoLongerNew: assign({isNew: false}),
+      setPreviewing: assign({currentView: STATES.PREVIEW}),
+      setEditing: assign({currentView: STATES.EDIT}),
       updateBuffer: assign({buffer: (_, e) => e.value}),
     },
     guards: {

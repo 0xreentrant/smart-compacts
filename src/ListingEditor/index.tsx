@@ -9,12 +9,11 @@ import {Preview} from './Preview'
 import {Button} from '../components/Button'
 import {editorMachine, MachineContext} from './ListingEditorMachine'
 import {usePrompt} from '../utils/useBlocker'
-import {PAGES} from '../constants'
+import {PAGES, STATES} from '../constants'
 import {ResumeURI} from '../types/Resume'
 import {IPFSContext} from '../IPFSContext'
 import {Spinner} from '../components/Spinner'
 
-const STATES = { EDIT: 'Edit', PREVIEW: 'Preview' }
 type EditorState = typeof STATES[keyof typeof STATES] // NOTE: will naturally grow with STATES
 const inverseEditorState = (cur: EditorState) => cur === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT
 
@@ -144,10 +143,10 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
 
           <div className=''>
             <Button 
-              onClick={toggleCurView}
+              onClick={handleToggleView}
               className='mr-2'
             >
-              {inverseEditorState(curView)}
+              {inverseEditorState(state.context.currentView)}
             </Button>        
 
             <Button 
@@ -167,7 +166,7 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
             </Button>
           </div>
 
-          {curView === STATES.EDIT
+          {state.context.currentView === STATES.EDIT
             ? <Editor 
               doc={state.context.buffer} 
               handleChange={(newText: string) => {
