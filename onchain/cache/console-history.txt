@@ -1,3 +1,73 @@
+.exit
+hh decodetx --contract 0x5FbDB2315678afecb367f032d93F642f64180aa3 --privkey 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --wallet 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 --hash 0x91709524c293a40aee0e1b5e143768c6e9ac0f379aa5af08c66138e4a9a1339c
+resume.interface
+resume = await ethers.getContractAt('Resume', '0x5FbDB2315678afecb367f032d93F642f64180aa3', signer)
+signer = new ethers.Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80', provider)
+provider = new ethers.providers.JsonRpcProvider()
+.exit
+exit
+const signer = new ethers.Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80', provider)
+const signer = new ethers.Wallet(privkey, provider)
+const provider = new ethers.providers.JsonRpcProvider()
+.exit
+tx = await resume.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '{ data: "Hello world"}')
+resume = await ethers.getContractAt('Resume', '0x5FbDB2315678afecb367f032d93F642f64180aa3', wallet)
+wallet = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider)
+provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
+.exit
+tx = await resume.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '{ data: "Hello world"}')
+resume = await ethers.getContractAt('Resume', '0x5FbDB2315678afecb367f032d93F642f64180aa3', wallet)
+wallet = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider)
+provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
+.exit
+resume = await ethers.getContractAt('Resume', '0x5FbDB2315678afecb367f032d93F642f64180aa3', wallet)
+wallet = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider)
+resume = await ethers.getContractAt('Resume', '0x5FbDB2315678afecb367f032d93F642f64180aa3', provider)
+provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
+.exit
+await resume.totalSupply()
+tx = await resume.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '{ data: "Hello world"}')
+await resume.totalSupply()
+resume.totalSupply()
+resume = await ethers.getContractAt('Resume', '0x5FbDB2315678afecb367f032d93F642f64180aa3', wallet)
+wallet = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider)
+resume.totalSupply()
+resume = await ethers.getContractAt('Resume', '0x5FbDB2315678afecb367f032d93F642f64180aa3', provider)
+await provider.listAccounts()
+provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
+provider = ethers.providers.JsonRpcProvider('http://localhost:8545')
+await ethers.getDefaultProvider()
+await resume.totalSupply()
+resume.totalSupply()
+resume.name()
+resume
+await tx.wait()
+tx.wait()
+tx = await resume.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '{ data: "Hello world"}')
+await resume.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '{ data: "Hello world"}')
+resume.toTRES('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', '{ data: "Hello world"}')
+await ethers.getDefaultProvider()
+wallet
+await resume
+await resume.baseURI()
+resume
+await resume.balanceOf('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266')
+resume = await ethers.getContractAt('Resume', '0x5FbDB2315678afecb367f032d93F642f64180aa3')
+wallet = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", ethers.getDefaultProvider())
+await resume.balanceOf('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266')
+resume = await ethers.getContractAt('Resume', '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512')
+await wallet.getBalance()
+wallet = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", ethers.getDefaultProvider())
+wallet
+await wallet.getBalance()
+wallet = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80")
+hre.tasks.run.paramDefinitions
+hre.tasks.run
+hre.tasks
+hre.artifacts
+hre.config
+c
+hre
 inter.parseTransaction({ data: tx.data, value: tx.value })
 inter = new ethers.utils.Interface(ABI.abi)
 ABI

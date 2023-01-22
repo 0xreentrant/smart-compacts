@@ -2,7 +2,8 @@ const balance = async ({privkey, wallet, contract}, {ethers}) => {
   const provider = new ethers.providers.JsonRpcProvider()
   const signer = new ethers.Wallet(privkey, provider)
   const resume = await ethers.getContractAt('Resume', contract, signer)
-  const out = await resume.balanceOf(wallet)
+
+  const out = (await resume.balanceOf(wallet)).toNumber()
   console.log(out)
 }
 
