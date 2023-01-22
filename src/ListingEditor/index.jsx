@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { EditableHeader } from './EditableHeader'
 import { Editor } from './Editor'
 import { usePrompt } from '../utils/useBlocker'
+import { PAGES } from '../constants'
 
 const STATES = { EDIT: 'Edit', PREVIEW: 'Preview' }
-const PAGES = { LISTINGS: '/' }
 
 const Button = ({to='', children, className='', disabled, onClick, ...props}) => {
   const withDisabledBg = disabled ? 'bg-gray-400' : ''
@@ -41,7 +41,7 @@ const PreviewListing = () => {
 export const ListingEditor = ({
   meta = { title: 'New Resume' },
   backTo = PAGES.LISTINGS,
-  doInitializeNew = true, // handle setting up for adding a listing
+  doInitializeNew = false, // handle setting up for adding a listing
 }) => {
   const [curView, setCurView] = useState(STATES.EDIT)
   const [inMemoryDoc, setInMemoryDoc] = useState(meta?.origDoc)
@@ -61,6 +61,11 @@ export const ListingEditor = ({
   const toggleCurView = () => {
     setCurView(curView === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT)
   }
+
+  // dEBUG
+  const params = useParams()
+  useEffect(() => {console.log(params)}, [])
+  ////////////////
 
   useEffect(() => { 
     if (heading !== meta.title) {
@@ -95,7 +100,7 @@ export const ListingEditor = ({
         </Button>        
 
         <Button 
-          className='mr-2 bg-green-400' 
+          className={/* todo: clean */'mr-2 ' + (!shouldDisableSave && 'bg-green-400')}
           disabled={shouldDisableSave}
           onClick={handleSave}
         >
@@ -103,7 +108,7 @@ export const ListingEditor = ({
         </Button>
 
         <Button 
-          className='bg-red-400' 
+          className={/* todo: clean */!isNew && 'bg-red-400'} 
           disabled={isNew}
           onClick={handleDelete}
         >

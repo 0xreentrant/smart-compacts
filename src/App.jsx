@@ -12,7 +12,7 @@ export const App = () => {
       <Routes>
         <Route path='/' element={<Listings />} />
         <Route path='/listing/' element={<ListingEditor doInitializeNew={true} />}>
-          <Route path=':addr' element={<ListingEditor />}/>
+          <Route path=':hash' element={<ListingEditor />}/>
         </Route>
       </Routes>
     </div>
