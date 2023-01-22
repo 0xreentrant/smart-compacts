@@ -10,7 +10,7 @@ type Props = {
 
 export const Button= ({to='', children, className='', disabled, onClick, ...props}: Props) => {
   const navigate = useNavigate()
-  const withDisabledBg = disabled ? 'bg-gray-400' : ''
+  const withDisabledStyles = disabled ? 'bg-gray-400 cursor-not-allowed' : ''
   const clickHandler = (e: React.SyntheticEvent) => {
     e.preventDefault()
 
@@ -27,7 +27,7 @@ export const Button= ({to='', children, className='', disabled, onClick, ...prop
   }
 
   return (
-    <a href={to} onClick={clickHandler} className={`btn ${className} ${withDisabledBg}`} {...props}>
+    <a href={to} onClick={clickHandler} className={`btn ${className} ${withDisabledStyles}`} {...props}>
       {children}
     </a>
   )
