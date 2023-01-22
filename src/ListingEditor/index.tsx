@@ -66,10 +66,8 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
 
   useEffect(() => {
     if (doInitializeNew) {
-      console.log('initializing new')
       send('IS_NEW')
     } else {
-      console.log('is existing file')
       send('IS_EXISTING')
     }
   }, [])
@@ -80,12 +78,17 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
   const isDirty = () => state.matches({editing: 'dirty'})
   const isClean = () => state.matches({editing: 'clean'})
   const isLoading = () => state.matches('loading')
+  const isEditView = state.context.currentView === STATES.EDIT
 
   // OLD STATE
   const [heading, setHeading] = useState(resumeURI?.title || 'New Resume')
   /////////////
 
   usePrompt('Are you sure you want to leave without saving?', isDirty()) 
+
+  const handleUpdateHeading = (val: string) => { 
+    setHeading(val) 
+  }
 
   const handleToggleView = () => {
     send('TOGGLE_VIEW')
@@ -117,7 +120,7 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
         <Spinner />
       ) : (
         <>
-          <EditableHeader text={heading} handleUpdate={(val: string) => { setHeading(val) }} />
+          <EditableHeader text={heading} handleUpdate={handleUpdateHeading} />
 
           <div className=''>
             <Button 
@@ -144,7 +147,7 @@ export const ListingEditor = ({doInitializeNew = true}: Props) => {
             </Button>
           </div>
 
-          {state.context.currentView === STATES.EDIT
+          {isEditView
             ? <Editor 
               doc={state.context.buffer} 
               handleChange={handleEditorChange}
