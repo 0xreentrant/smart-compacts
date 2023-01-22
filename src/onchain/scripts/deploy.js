@@ -1,0 +1,54 @@
+// We require the Hardhat Runtime Environment explicitly here. This is optional
+// but useful for running the script in a standalone fashion through `node <script>`.
+//
+// When running the script with `npx hardhat run <script>` you'll find the Hardhat
+// Runtime Environment's members available in the global scope.
+const hre = require("hardhat");
+
+async function main() {
+  // Hardhat always runs the compile task when running scripts with its command
+  // line interface.
+  //
+  // If this script is run directly using `node` you may want to call compile
+  // manually to make sure everything is compiled
+  // await hre.run('compile');
+
+  // We get the contract to deploy
+  const Resume = await hre.ethers.getContractFactory("Resume");
+  const resume = await Resume.deploy();
+
+  await resume.deployed();
+
+  console.log("Resume deployed to:", resume.address);
+  console.log('Minting for first address')
+
+  const firstWallet = (await hre.ethers.getSigners())[0].address
+  const dummyURI = { title: 'Test Resume 1', createdOn: '0', ipfsHash: 'ipfs://0'}
+  const minted = await resume.toTRES(firstWallet, JSON.stringify(dummyURI))
+
+  console.log('Minted', minted)
+  console.log('Showing all minted')
+
+  const numNft = (await resume.totalSupply()).toNumber()
+  console.log('Num nfts', numNft)
+
+  const nftQueries = Array(numNft).fill().map((_, i) => {
+    return resume.tokenByIndex(i).then(id => {
+      const tokenId = id.toNumber()
+      return Promise.all([tokenId, resume.tokenURI(tokenId)])
+    })
+  })
+
+  return Promise.all(nftQueries).then(allNfts => {
+    allNfts.forEach(([tokenId, tokenURI]) => console.log('Id:', tokenId, '\nData:', tokenURI, '\n'))
+  })
+}
+
+// We recommend this pattern to be able to use async/await everywhere
+// and properly handle errors.
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
