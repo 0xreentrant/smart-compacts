@@ -1,5 +1,11 @@
 import { MouseEventHandler } from 'react'
 
+export type Entry = {
+  tokenId: number,
+  title: string,
+  createdOn: string
+}
+
 export interface EntryProps {
   title: string,
   createdOn: number,

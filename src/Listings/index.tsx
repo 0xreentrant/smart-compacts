@@ -5,7 +5,7 @@ import {EntriesList} from './EntriesList'
 import {EntriesHeader} from './EntriesHeader'
 import {Resume} from '../onchain/typechain-types/Resume'
 import {ResumeListings} from './ResumeListings'
-import {Entry} from '../types/Entry'
+import {Entry} from './Entry'
 
 export const Listings = () => {
   const resume = useContext(EthersContext) as Resume
@@ -17,13 +17,11 @@ export const Listings = () => {
 
     const run = async () => {
       const privateResumes = await listingsService.queryPrivateResumes()
-
-      setPrivateListings(privateResumes)
-      
       const privateIds = privateResumes.map(({tokenId}) => tokenId)
       const allResumes = await listingsService.queryPublicResumes()
       const filteredResumes = allResumes.filter(entry => privateIds.includes(entry.tokenId))
 
+      setPrivateListings(privateResumes)
       setPublicListings(filteredResumes)
     }
 
@@ -34,9 +32,7 @@ export const Listings = () => {
     <div className=''>
       <h1 className='pb-2'>My Resumes</h1>
       <EntriesHeader />
-      <EntriesList 
-        entries={privateListings} 
-      />
+      <EntriesList entries={privateListings} />
 
       <h1 className='pb-2'>Public Resumes</h1>
       <EntriesHeader />
