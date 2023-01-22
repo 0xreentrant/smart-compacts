@@ -3,6 +3,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { EditableHeader } from './EditableHeader'
 import { Editor } from './Editor'
 import { Preview } from './Preview'
+import { Button } from './Button'
+
 import { usePrompt } from '../utils/useBlocker'
 import { PAGES } from '../constants'
 
@@ -10,37 +12,13 @@ const DUMMY = "*React-Markdown* is **Awesome**"
 
 const STATES = { EDIT: 'Edit', PREVIEW: 'Preview' }
 
-const Button = ({to='', children, className='', disabled, onClick, ...props}) => {
-  const navigate = useNavigate()
-  const withDisabledBg = disabled ? 'bg-gray-400' : ''
-  const clickHandler = e => {
-    e.preventDefault()
-
-    if (disabled) {
-      return 
-    }
-
-    if (to) {
-      navigate()
-      return;
-    }
-
-    onClick && onClick(e)
-  }
-
-  return (
-    <a href={to} onClick={clickHandler} className={`btn ${className} ${withDisabledBg}`} {...props}>
-      {children}
-    </a>
-  )
-}
-
 export const ListingEditor = ({
   meta = { title: 'New Resume', origDoc: DUMMY },
   backTo = PAGES.LISTINGS,
   doInitializeNew = false, // handle setting up for adding a listing
 }) => {
   const [curView, setCurView] = useState(STATES.PREVIEW)
+  const [lastSaved, setLastSaved] = useState(meta?.origDoc)
   const [inMemoryDoc, setInMemoryDoc] = useState(meta?.origDoc)
   const [isNew, setIsNew] = useState(doInitializeNew)
   const [hasEdits, setHasEdits] = useState(false)
@@ -53,6 +31,7 @@ export const ListingEditor = ({
   const handleSave = () => {
     setHasEdits(false) 
     setIsNew(false)
+    setLastSaved(inMemoryDoc)
   }
 
   const inverseEditorState = (cur) => cur === STATES.EDIT ? STATES.PREVIEW : STATES.EDIT
@@ -63,14 +42,23 @@ export const ListingEditor = ({
 
   // dEBUG
   const params = useParams()
-  useEffect(() => {console.log(params)}, [])
+  useEffect(() => {console.log(meta?.origDoc, inMemoryDoc)}, [])
   ////////////////
 
   useEffect(() => { 
-    if (heading !== meta.title) {
+    // enable "save"
+    if (
+      heading !== meta.title 
+      || inMemoryDoc !== meta?.origDoc
+    ) {
       setHasEdits(true)
     }
-  }, [heading])
+
+    // disable "save"
+    if (inMemoryDoc === lastSaved) {
+      setHasEdits(false)
+    }
+  }, [heading, inMemoryDoc])
 
   usePrompt('Are you sure you want to leave without saving?', hasEdits) 
 
@@ -116,7 +104,10 @@ export const ListingEditor = ({
       </div>
 
       {curView === STATES.EDIT
-        ? <Editor doc={inMemoryDoc} />
+        ? <Editor 
+            doc={inMemoryDoc} 
+            handleChange={(e) => setInMemoryDoc(e.target.value)}
+          />
         : <Preview document={inMemoryDoc} />
       }
     </div>
