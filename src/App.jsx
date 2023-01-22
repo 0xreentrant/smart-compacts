@@ -7,9 +7,10 @@ export const App = () => {
     <div className='p-3'>
       <Routes>
         <Route path='/' element={<Listings />} />
-          <Route path='/listing/' element={<ListingEditor doInitializeNew={true} />}>
-          <Route path=':hash' element={<ListingEditor />}/>
-          </Route>
+        <Route path='/listing/' element={<ListingEditor backTo="/" doInitializeNew={true} />}>
+          <Route path=':tokenId' element={<ListingEditor backTo="/" />}/>
+          <Route path='new' element={<ListingEditor backTo="/" doInitializeNew={true} />}/>
+        </Route>
       </Routes>
     </div>
   )

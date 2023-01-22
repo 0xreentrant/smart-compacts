@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Formik } from 'formik'
 
-export const SubmissionForm = ({ipfs}) => {
-  const [address, setAddress] = useState('');
+export const SubmissionForm = () => {
+ const [address, setAddress] = useState('');
   const withAddrMessage = addr => `Got address ${addr}`
 
   const [submitError, setSubmitError] = useState('')

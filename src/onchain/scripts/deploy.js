@@ -22,11 +22,14 @@ async function main() {
   console.log("Resume deployed to:", resume.address);
   console.log('Minting for first address')
 
-  const firstWallet = (await hre.ethers.getSigners())[0].address
-  const dummyURI = { title: 'Test Resume 1', createdOn: '0', ipfsHash: 'ipfs://0'}
-  const minted = await resume.toTRES(firstWallet, JSON.stringify(dummyURI))
+  const wallet = async idx => (await hre.ethers.getSigners())[idx].address
+  const buildURI = (str, url) => ({ title: `Test Resume ${str}`, createdOn:`${new Date()}`, ipfsHash: `${url}`})
 
-  console.log('Minted', minted)
+  const private = await resume.toTRES(await wallet(0), JSON.stringify(buildURI('private', 'QmVwMmp4sD7ravgiEcLXNVKBYUVXsEh5NmU4JY1UzdmGMk')))
+  const public = await resume.toTRES(await wallet(1), JSON.stringify(buildURI('public', 'QmZdVsxDkJZa5nBbgzqCtjryLLgZ6yMYXk6VNY5BiUbCjW')))
+
+  console.log('Minted private ("connected") wallet', private)
+  console.log('Minted public wallet', public)
   console.log('Showing all minted')
 
   const numNft = (await resume.totalSupply()).toNumber()

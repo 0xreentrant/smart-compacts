@@ -1,4 +1,5 @@
 import {Resume} from '../onchain/typechain-types/Resume'
+import {IndexedURI} from '../types/Resume'
 
 const DEMO_WALLET = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8' // hardhat wallet
 
@@ -9,7 +10,7 @@ export class ResumeListings {
     this.resume = _resume
   }
 
-  getTokenURIWithId = async (tokenId: number) => {
+  getTokenURIWithId = async (tokenId: number): Promise<IndexedURI> => {
     return { tokenId, ...JSON.parse(await this.resume.tokenURI(tokenId)) } // TODO: validate data
   }
 

@@ -1,5 +1,10 @@
 export type ResumeURI = {
   title: string,
   createdOn: string,
-  ipfsHash: JSON
+  ipfsHash: string
 }
+
+export type IndexedURI = ResumeURI & {
+  tokenId: number
+}
+

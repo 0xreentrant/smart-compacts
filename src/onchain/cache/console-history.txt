@@ -1,3 +1,13 @@
+res = await ipfs.add("*This is **another** test resume, **behold**!*")
+for await (const chunk of ipfs.get('QmZdVsxDkJZa5nBbgzqCtjryLLgZ6yMYXk6VNY5BiUbCjW')) { console.log(chunk) }
+console.log(out)
+cat out
+out  = await ipfs.get('QmZdVsxDkJZa5nBbgzqCtjryLLgZ6yMYXk6VNY5BiUbCjW')
+for await (const chunk of ipfs.cat('QmZdVsxDkJZa5nBbgzqCtjryLLgZ6yMYXk6VNY5BiUbCjW')) { console.log(chunk) }
+res = await ipfs.add("*This is a test resume, **behold**!*")
+ipfs = IPFS.create( 'https://ipfs.infura.io:5001')
+IPFS = require('ipfs-http-client')
+IPFS = require('ipfs')
 .exit
 hh decodetx --contract 0x5FbDB2315678afecb367f032d93F642f64180aa3 --privkey 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --wallet 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 --hash 0x91709524c293a40aee0e1b5e143768c6e9ac0f379aa5af08c66138e4a9a1339c
 resume.interface
