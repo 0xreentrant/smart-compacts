@@ -16,13 +16,13 @@ const Button = ({to='', children, className='', disabled, onClick, ...props}) =>
   const clickHandler = e => {
     e.preventDefault()
 
-    if (to) {
-      navigate(to)
-      return;
-    }
-
     if (disabled) {
       return 
+    }
+
+    if (to) {
+      navigate()
+      return;
     }
 
     onClick && onClick(e)
