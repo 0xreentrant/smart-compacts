@@ -1,9 +1,17 @@
 import { useNavigate } from 'react-router-dom'
 
-export const Button = ({to='', children, className='', disabled, onClick, ...props}) => {
+type Props = {
+  to?: string,
+  className?: string,
+  disabled?: boolean,
+  onClick?: Function,
+  children?: React.ReactNode
+}
+
+export const Button= ({to='', children, className='', disabled, onClick, ...props}: Props) => {
   const navigate = useNavigate()
   const withDisabledBg = disabled ? 'bg-gray-400' : ''
-  const clickHandler = e => {
+  const clickHandler = (e: React.SyntheticEvent) => {
     e.preventDefault()
 
     if (disabled) {

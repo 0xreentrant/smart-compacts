@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Entry } from './Entry'
+import { Listing } from './Listing'
 
 interface EntriesListProps {
   entries: Array<any> // TODO: expand
@@ -15,7 +15,7 @@ export const EntriesList = ({entries}: EntriesListProps) => {
         title,
         createdOn,
       }) => { 
-        return <Entry 
+        return <Listing 
           key={tokenId} 
           onClick={() => navigate(`/listing/${tokenId}`)}
           title={title}

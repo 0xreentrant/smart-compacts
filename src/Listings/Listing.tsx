@@ -1,18 +1,12 @@
 import { MouseEventHandler } from 'react'
 
-export type Entry = {
-  tokenId: number,
-  title: string,
-  createdOn: string
-}
-
-export interface EntryProps {
+export interface ListingProps {
   title: string,
   createdOn: number,
   onClick: MouseEventHandler
 }
 
-export const Entry = ({title, createdOn, onClick}: EntryProps) => { 
+export const Listing = ({title, createdOn, onClick}: ListingProps) => { 
   return (
     <div 
       className='flex justify-between max-w-2xl rounded-md mt-2 p-2 bg-gray-200 shadow'

@@ -5,12 +5,12 @@ import {EntriesList} from './EntriesList'
 import {EntriesHeader} from './EntriesHeader'
 import {Resume} from '../onchain/typechain-types/Resume'
 import {ResumeListings} from './ResumeListings'
-import {Entry} from './Entry'
+import {ResumeURI} from 'types/Resume'
 
 export const Listings = () => {
   const resume = useContext(EthersContext) as Resume
-  const [publicListings, setPublicListings] = useState<Array<Entry>>([])
-  const [privateListings, setPrivateListings] = useState<Array<Entry>>([])
+  const [publicListings, setPublicListings] = useState<Array<ResumeURI>>([])
+  const [privateListings, setPrivateListings] = useState<Array<ResumeURI>>([])
 
   useEffect(() => { 
     const listingsService = new ResumeListings(resume)
@@ -19,7 +19,7 @@ export const Listings = () => {
       const privateResumes = await listingsService.queryPrivateResumes()
       const privateIds = privateResumes.map(({tokenId}) => tokenId)
       const allResumes = await listingsService.queryPublicResumes()
-      const filteredResumes = allResumes.filter(entry => privateIds.includes(entry.tokenId))
+      const filteredResumes = allResumes.filter(entry => !privateIds.includes(entry.tokenId))
 
       setPrivateListings(privateResumes)
       setPublicListings(filteredResumes)
