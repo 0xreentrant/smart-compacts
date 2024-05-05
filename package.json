@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@xstate/react": "^1.6.3",
-    "bignumber.js": "^9.0.2",
+    "bignumber.js": "^9.1.2",
     "ethers": "^5.5.2",
     "formik": "^2.2.9",
     "ipfs-http-client": "^54.0.2",
